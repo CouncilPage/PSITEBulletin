@@ -1,1 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PSITE PAGE</title>
 
+  <style>
+    body {
+      display: flex;
+      background-image: url(image/Background.png);
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+      min-height: 100vh;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background-position 0.5s ease;
+      font-family: Arial, sans-serif;
+      color: black;
+      user-select: none;
+      margin: 0;
+    }body.move-left {
+      background-position: left;
+    }
+
+    .icons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      padding: 40px;
+      transition: transform 0.5s ease;
+    }.icons.move-left {
+      transform: translateX(-350px);
+    }
+
+    .row {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .panel {
+      background-color: white;
+      border: 1px solid black;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      width: 135px;
+      height: 135px;
+      display: flex;
+      justify-content: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-sizing: border-box;
+      overflow: hidden;
+    }.panel:hover {
+      transform: scale(1.05);
+      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+    }.panel img {
+      width: 100%;
+      height: auto;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .background {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.2;
+      z-index: -1;
+      user-select: none;
+      pointer-events: none;
+      transition: transform 0.5s ease;
+    }.background img {
+      width: 950px;
+      height: 950px;
+    }.background.move-left {
+      transform: translate(-50%, -50%) translateX(-350px);
+    }
+
+    .sidepanel {
+      position: fixed;
+      top: 0;
+      right: -450px;
+      width: 400px;
+      height: 100vh;
+      background-image: url(image/Background.png);
+      backdrop-filter: blur(10px);
+      border-left: 2px solid black;
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
+      box-shadow: -10px 0 25px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: right 0.6s ease;
+      z-index: 15;
+      padding: 30px;
+    }.sidepanel.open {
+      right: 0;
+    }.sidepanel h2 {
+      font-family: 'Brush Script MT', cursive;
+      font-size: 60px;
+      margin-top: -100px;
+      margin-bottom: 30px;
+      color: #222;
+    }.sidepanel input {
+      width: 80%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #555;
+      border-radius: 15px;
+      font-size: 16px;
+      background: white;
+    }.sidepanel button {
+      width: 85%;
+      padding: 12px;
+      margin-top: 15px;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }.sidepanel button:hover {
+      background: #111;
+    }.sidepanel a {
+      margin-top: 10px;
+      color: #333;
+      font-size: 14px;
+      text-decoration: none;
+      cursor: pointer;
+    }.sidepanel a:hover {
+      text-decoration: underline;
+    }
+
+    .rightbutton {
+      position: fixed;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      width: 85px;
+      height: 85px;
+      background-image: url(image/left.png);
+      background-size: cover;
+      background-position: center;
+      border: 2px solid black;
+      border-radius: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: right 0.5s ease, transform 0.3s ease, background-color 0.3s ease;
+      z-index: 20;
+    }.rightbutton:hover {
+      transform: translateY(-50%) scale(1.1);
+      background-color: rgba(200, 200, 200, 0.6);
+    }.rightbutton.move-left {
+      right: 420px;
+    }.rightbutton.opened {
+      background-image: url(image/right.png);
+    }
+    #message {
+      margin-top: 10px;
+      font-weight: bold;
+      color: red;
+      text-align: center;
+    }
+
+ 
+    #resetModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 30;
+    }
+    #resetModal .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      width: 300px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+    #resetModal input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: 1px solid #aaa;
+    }
+    #resetModal button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background: #333;
+      color: white;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    #resetModal button:hover {
+      background: #111;
+    }
+
+    @keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    }
+    
+    @media (max-width: 480px) {
+        #resetModal .modal-content {
+            width: 90%;
+            padding: 20px;
+        }
+        #resetModal input {
+            font-size: 14px;
+        }
+        #resetModal button {
+            font-size: 14px;
+        }
+    }
+
+
+    @media (max-width: 768px) {
+      .icons {
+        gap: 20px;
+        padding: 20px;
+      }
+      .row {
+        gap: 15px;
+      }
+      .panel {
+        width: 90px;
+        height: 90px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .icons {
+        gap: 15px;
+        padding: 10px;
+      }
+      .row {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .panel {
+        width: 70px;
+        height: 70px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="icons" id="icons">
+    <div class="row">
+      <div class="panel"><img src="Image/Icon.png" alt="Icon1"></div>
+    </div>
+    <div class="row">
+      <div class="panel"><img src="Image/Icon.png" alt="Icon2"></div>
+      <div class="panel"><img src="Image/Icon.png" alt="Icon2"></div>
+      <div class="panel"><img src="Image/Icon.png" alt="Icon2"></div>
+    </div>
+    <div class="row">
+      <div class="panel"><img src="Image/Icon.png" alt="Icon2"></div>
+      <div class="panel"><img src="Image/Icon.png" alt="Icon2"></div>
+      <div class="panel"><img src="Image/Icon.png" alt="Icon2"></div>
+      <div class="panel"><img src="Image/Icon.png" alt="Icon2"></div>
+      <div class="panel"><img src="Image/Icon.png" alt="Icon2"></div>
+    </div>
+    <div class="row">
+      <div class="panel"><img src="Image/Icon.png" alt="Icon2"></div>
+      <div class="panel"><img src="Image/Icon.png" alt="Icon2"></div>
+      <div class="panel"><img src="Image/Icon.png" alt="Icon2"></div>
+    </div>
+  </div>
+
+  <div class="background" id="bgLogo">
+    <img src="image/LOGOPSTIE.png" alt="LOGO">
+  </div>
+
+  <div class="sidepanel" id="sidePanel">
+    <h2>PSITE Login</h2>
+    <input type="text" id="username" placeholder="Username" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <a onclick="openResetModal()">Forgot Password?</a>
+    <button onclick="manualLogin()">Sign in</button>
+    <button style="background: gray; margin-top: 10px;" onclick="registerUser()">Sign up</button>
+    <p id="message"></p>
+  </div>
+
+  <div class="rightbutton" id="toggleBtn"></div>
+
+    
+    <div id="resetModal">
+    <div class="modal-content">
+      <h3>Reset Password</h3>
+      <input type="text" id="resetUsername" placeholder="Enter your username" />
+      <input type="password" id="newPassword" placeholder="Enter new password" />
+      <button onclick="resetPassword()">Reset</button>
+      <button style="background:gray;" onclick="closeResetModal()">Cancel</button>
+      <p id="resetMessage" style="color:red; margin-top:10px;"></p>
+    </div>
+  </div>
+
+  
+  <script src="Shared/script.js"></script>
+
+</body>
+</html>
